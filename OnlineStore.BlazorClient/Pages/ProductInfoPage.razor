@@ -1,0 +1,34 @@
+﻿@page "/ProductInfo/{ProductID:guid}"
+
+@using OnlineStore.Models
+@using OnlineStore.HttpApiClient
+
+<h3>About Product</h3>
+@inject IShopClient ShopClient
+
+@if(_product is not null)
+{
+    <div>
+        <ul>
+            <li>Information: @_product.Description</li>
+        </ul>
+    </div>
+}
+
+
+
+
+
+
+@code {
+    [Parameter]
+    public Guid ProductID { get; set; }
+    private Product _product { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _product = await ShopClient.GetProduct(ProductID,default);
+    }
+
+}
