@@ -1,0 +1,70 @@
+﻿@page "/Products"
+
+@using OnlineStore.BlazorClient.BasketShop
+@using OnlineStore.Domain.Entities
+@using OnlineStore.HttpApiClient
+<h3>List Product</h3>
+@inject IToastService Toast
+@inject IShopClient ShopClient;
+@inject ICartService Service
+
+
+@if (_products is not null)
+{
+    @foreach (var product in _products)
+    {
+        <MudCard/>
+            <MudCardMedia Image="@product.ImgUri" Height=400/>
+            <MudCardContent>
+                <MudText Typo="Typo.h5">Name: @product.Name</MudText>
+                <MudText Typo="Typo.h5">Price: @product.Price</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                @* <MudButton Href="/ProductInfo/" *@
+                @*            Target="product.Id" *@
+                @*            Variant="Variant.Filled" *@
+                @*            Color="Color.Primary" *@
+                @*            Disabled=@disabled> *@
+                @*     Learn More *@
+                @* </MudButton> *@
+                <a href="/ProductInfo/@product.Id">Learn More</a>
+            </MudCardActions>
+            @* <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="(()=>Add(product.Id))">Add</MudButton>*@
+            <button class="" @onclick="@(() => Add(product.Id))">Add</button>
+            <MudCard/>
+    }
+}
+else
+{
+    <div>
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true"/>
+    </div>
+}
+
+@code {
+
+    private IReadOnlyList<Product> _products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _products = await ShopClient.GetProducts(default);
+    }
+
+    private async Task Add(Guid id)
+    {
+        using var cts = new CancellationTokenSource();
+        Toast.ShowInfo($"Addition the product to the cart! : ", "Addendum!", () =>
+        {
+            cts.Cancel();
+            Toast.ShowError("CANCELLED");
+        });
+        var cancellationToken = cts.Token;
+        await Service.AddToCart(id, cancellationToken);
+        Toast.ShowSuccess($"Added the product to the cart! : ", "Success!");
+    }
+
+
+    bool disabled = false;
+
+}

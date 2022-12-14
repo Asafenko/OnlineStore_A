@@ -1,18 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.WebApi", "OnlineStore.WebApi\OnlineStore.WebApi.csproj", "{54D0533F-40D8-4FCE-97D0-E26BB31C50A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.WebApi", "backend\OnlineStore.WebApi\OnlineStore.WebApi.csproj", "{54D0533F-40D8-4FCE-97D0-E26BB31C50A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.HttpApiClient", "OnlineStore.HttpApiClient\OnlineStore.HttpApiClient.csproj", "{51FB4ADB-D5ED-4B42-8384-D8BA9F0FE2AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.HttpApiClient", "frontend\OnlineStore.HttpApiClient\OnlineStore.HttpApiClient.csproj", "{51FB4ADB-D5ED-4B42-8384-D8BA9F0FE2AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.BlazorClient", "OnlineStore.BlazorClient\OnlineStore.BlazorClient.csproj", "{6789EB7E-3F79-43BF-B92E-7E9795586E5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.BlazorClient", "frontend\OnlineStore.BlazorClient\OnlineStore.BlazorClient.csproj", "{6789EB7E-3F79-43BF-B92E-7E9795586E5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.Models", "OnlineStore.Models\OnlineStore.Models.csproj", "{11F8C19D-E046-4C3A-9F54-7081BF053B11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.HttpModels", "shared\OnlineStore.HttpModels\OnlineStore.HttpModels.csproj", "{11F8C19D-E046-4C3A-9F54-7081BF053B11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.HttpApiClientRefit", "OnlineStore.HttpApiClientRefit\OnlineStore.HttpApiClientRefit.csproj", "{D475C4D2-3839-47B7-AB82-FFE5EDC72583}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.HttpApiClientRefit", "frontend\OnlineStore.HttpApiClientRefit\OnlineStore.HttpApiClientRefit.csproj", "{D475C4D2-3839-47B7-AB82-FFE5EDC72583}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.HttpApiClientFake", "OnlineStore.HttpApiClientFake\OnlineStore.HttpApiClientFake.csproj", "{998E8FAB-ABF9-478D-B7CC-6F0AD9EDDAC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.HttpApiClientFake", "frontend\OnlineStore.HttpApiClientFake\OnlineStore.HttpApiClientFake.csproj", "{998E8FAB-ABF9-478D-B7CC-6F0AD9EDDAC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.Data", "OnlineStore.Data\OnlineStore.Data.csproj", "{0AC96581-1AC6-4061-9FEA-5034624EFA25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.Data", "backend\OnlineStore.Data\OnlineStore.Data.csproj", "{0AC96581-1AC6-4061-9FEA-5034624EFA25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineStore.Domain", "backend\OnlineStore.Domain\OnlineStore.Domain.csproj", "{D6F41908-5839-4E21-8F15-5671F4CD468B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{393410D6-46CD-41C4-B89C-C627919129B6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{AFB03BD8-A4CB-48E5-A6B1-5E5744294C85}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{7E15F6EE-E9E0-4ACD-A306-8611DA813149}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,5 +56,19 @@ Global
 		{0AC96581-1AC6-4061-9FEA-5034624EFA25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AC96581-1AC6-4061-9FEA-5034624EFA25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AC96581-1AC6-4061-9FEA-5034624EFA25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6F41908-5839-4E21-8F15-5671F4CD468B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6F41908-5839-4E21-8F15-5671F4CD468B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6F41908-5839-4E21-8F15-5671F4CD468B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6F41908-5839-4E21-8F15-5671F4CD468B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0AC96581-1AC6-4061-9FEA-5034624EFA25} = {393410D6-46CD-41C4-B89C-C627919129B6}
+		{D6F41908-5839-4E21-8F15-5671F4CD468B} = {393410D6-46CD-41C4-B89C-C627919129B6}
+		{54D0533F-40D8-4FCE-97D0-E26BB31C50A5} = {393410D6-46CD-41C4-B89C-C627919129B6}
+		{11F8C19D-E046-4C3A-9F54-7081BF053B11} = {7E15F6EE-E9E0-4ACD-A306-8611DA813149}
+		{D475C4D2-3839-47B7-AB82-FFE5EDC72583} = {AFB03BD8-A4CB-48E5-A6B1-5E5744294C85}
+		{998E8FAB-ABF9-478D-B7CC-6F0AD9EDDAC1} = {AFB03BD8-A4CB-48E5-A6B1-5E5744294C85}
+		{51FB4ADB-D5ED-4B42-8384-D8BA9F0FE2AD} = {AFB03BD8-A4CB-48E5-A6B1-5E5744294C85}
+		{6789EB7E-3F79-43BF-B92E-7E9795586E5C} = {AFB03BD8-A4CB-48E5-A6B1-5E5744294C85}
 	EndGlobalSection
 EndGlobal

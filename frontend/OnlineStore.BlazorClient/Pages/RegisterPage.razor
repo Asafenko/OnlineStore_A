@@ -1,0 +1,82 @@
+﻿@page "/Register"
+@using OnlineStore.HttpApiClient
+@using OnlineStore.HttpModels.Requests
+<h3>Register</h3>
+@inject IShopClient ShopClient;
+@* <EditForm Model="_request" OnValidSubmit="Register"> *@
+@*     <DataAnnotationsValidator/> *@
+@*     Name: <input type="text" @bind-value="_request.Name"/><br/> *@
+@*     Login: <input type="email" @bind-value="_request.Email"/><br/> *@
+@*     Password: <input type="text" @bind-value="_request.Password"/><br/> *@
+@*     <ValidationSummary/> *@
+@*     *@
+@* </EditForm> *@
+
+
+<EditForm Model="_request">
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudPaper Class="pa-4">
+                <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
+                    <MudTextField T="string" Label="Username" Required="true"
+                                  @bind-value="_request.Name" RequiredError="User name is required!"/>
+                    <MudTextField T="string" Label="Email" Required="true"
+                                  @bind-value="_request.Email" RequiredError="Email is required!"/>
+                    <MudTextField T="string"Label="Password" @bind-value="_request.Password"
+                                  HelperText="Repeat the password" InputType="InputType.Password"/>
+
+                </MudForm>
+            </MudPaper>
+            <MudPaper Class="pa-4 mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Secondary" DisableElevation="true"
+                           OnClick="@(() => _form.Reset())" Class="mx-2">
+                    Reset
+                </MudButton>
+
+                @* <input type="submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" value="Register"/>   *@
+
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@(Register)" Disabled="@(!_success)"
+                           Class="ml-auto">
+                    Register
+                </MudButton>
+
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    private RegisterRequest _request = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Register()
+    {
+        await ShopClient.Registration(_request);
+    }
+
+
+    private bool _success;
+    private string[] _errors = { };
+    private MudTextField<string> _pwField1;
+    private MudForm _form;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

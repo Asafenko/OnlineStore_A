@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="myapp [2]" uuid="9840afa3-e097-4fa9-befd-33c33d2d158d">
+    <data-source source="LOCAL" name="myapp" uuid="c1709393-4854-49bc-a865-ddae46cc0c86">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\File\RiderProjects\OnlineStore\OnlineStore.WebApi\myapp.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:D:\File\RiderProjects\OnlineStore\backend\OnlineStore.WebApi\myapp.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>
