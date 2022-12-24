@@ -1,7 +1,10 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using OnlineStore.Domain.Entities;
+using OnlineStore.Domain.Exceptions;
 using OnlineStore.HttpModels.Requests;
+using OnlineStore.HttpModels.Responses;
 
 namespace OnlineStore.HttpApiClient;
 
@@ -73,15 +76,36 @@ public class ShopClient : IShopClient
         if (response.StatusCode == HttpStatusCode.BadRequest)
         {
             var json = await response.Content.ReadAsStringAsync(cts);
-            throw new Exception(json);
+            throw new HttpBadRequestException(json);
         }
         response.EnsureSuccessStatusCode();
     }
+
+    public async Task<LogInResponse> Login(string email, string password, CancellationToken cts = default)
+    {
+        if (email == null) throw new ArgumentNullException(nameof(email));
+        if (password == null) throw new ArgumentNullException(nameof(password));
     
-    
-    
-    
-    
+        var uri = $"{_host}/accounts/log_in";
+        var responseMessage = await _httpClient.PostAsJsonAsync(uri,email,cts);
+        if(responseMessage.StatusCode == HttpStatusCode.BadRequest)
+        {
+            var json = await responseMessage.Content.ReadAsStringAsync(cts);
+            throw new HttpBadRequestException(json);
+        }
+        
+        responseMessage.EnsureSuccessStatusCode();
+        
+        var response = await responseMessage.Content.ReadFromJsonAsync<LogInResponse>(
+            cancellationToken: cts);
+        
+        _httpClient.DefaultRequestHeaders.Authorization
+            = new AuthenticationHeaderValue("Bearer", response!.Token);
+        
+        return response;
+    }
+
+
     // DELETE ALL PRODUCT
     // public async Task Delete(CancellationToken cts= default)
     // {

@@ -1,4 +1,6 @@
-﻿namespace OnlineStore.Domain.Services;
+﻿using OnlineStore.Domain.Entities;
+
+namespace OnlineStore.Domain.Services;
 
 public interface IPasswordHasherService
 {

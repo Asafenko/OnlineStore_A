@@ -9,7 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\..\backend\OnlineStore.Domain\OnlineStore.Domain.csproj" />
       <ProjectReference Include="..\..\shared\OnlineStore.HttpModels\OnlineStore.HttpModels.csproj" />
-      <ProjectReference Include="..\OnlineStore.Domain\OnlineStore.Domain.csproj" />
     </ItemGroup>
 
 </Project>

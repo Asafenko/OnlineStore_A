@@ -7,8 +7,4 @@
         <RootNamespace>OnlineStore.HttpModels</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Responses" />
-    </ItemGroup>
-
 </Project>

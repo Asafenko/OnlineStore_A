@@ -8,12 +8,12 @@ namespace OnlineStore.WebApi.Services;
 public class Pbkdf2PasswordHasher : IPasswordHasherService
 {
     private readonly PasswordHasher<Account> _hasher;
-    private readonly Account _dummy = new Account("", "", "", new Guid());
+    private readonly Account _dummy;//new Account("", "", "", new Guid())
 
-
-    public Pbkdf2PasswordHasher(IOptions<PasswordHasherOptions> options)
+    
+    public Pbkdf2PasswordHasher(IOptions<PasswordHasherOptions> optionsAccessor)
     {
-        _hasher = new PasswordHasher<Account>();
+        _hasher = new PasswordHasher<Account>(optionsAccessor);
     }
 
     public async Task<string> HashPassword(string password)
