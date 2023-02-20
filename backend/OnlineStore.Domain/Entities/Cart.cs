@@ -18,7 +18,6 @@ public record Cart : IEntity
 public record CartItem
 {
     public Guid Id { get; set; }
-    
     public Guid ProductId { get; set; }
     public decimal Price { get; set; }
     public double Quantity { get; set; }

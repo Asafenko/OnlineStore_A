@@ -8,4 +8,5 @@ public interface ICartRepository
     Task Add(Cart entity, CancellationToken cts = default);
     Task Update(Cart entity,CancellationToken cts = default);
     Task DeleteById(Guid id, CancellationToken cts = default);
+    Task<Cart> GetCartByAccountId(Guid accountId, CancellationToken ctsToken = default);
 }

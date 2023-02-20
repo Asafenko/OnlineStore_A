@@ -71,7 +71,7 @@ public class ShopClient : IShopClient
 
     
     
-    public async Task Registration(RegisterRequest request, CancellationToken ctsToken = default)
+    public async Task<RegisterResponse> Registration(RegisterRequest request, CancellationToken ctsToken = default)
     {
         if (request == null) throw new ArgumentNullException(nameof(request));
         var uri = $"{_host}/accounts/register";
@@ -82,6 +82,10 @@ public class ShopClient : IShopClient
             throw new HttpBadRequestException(json);
         }
         responseMessage.EnsureSuccessStatusCode();
+        var response = await responseMessage.Content.ReadFromJsonAsync<RegisterResponse>(
+            cancellationToken: ctsToken);
+        SetAuthorizationToken(response.Token,ctsToken);
+        return response;
     }
 
     public async Task<LogInResponse> Login(LogInRequest request, CancellationToken ctsToken = default)
@@ -98,18 +102,20 @@ public class ShopClient : IShopClient
         responseMessage.EnsureSuccessStatusCode();
         var response = await responseMessage.Content.ReadFromJsonAsync<LogInResponse>(
             cancellationToken: ctsToken);
-        SetAuthorizationToken(response.Token);
+        SetAuthorizationToken(response.Token,ctsToken);
         return response;
     }
 
     //private bool IsAuthorizationTokenSet { get; set; }
-    public void SetAuthorizationToken(string token)
+    public void SetAuthorizationToken(string token,CancellationToken ctsToken = default)
     {
         if (token == null) throw new ArgumentNullException(nameof(token));
          _httpClient.DefaultRequestHeaders.Authorization 
             = new AuthenticationHeaderValue("Bearer", token);
         // IsAuthorizationTokenSet = true;
     }
+
+    
 
     public void ResetAuthorizationToken()
     {

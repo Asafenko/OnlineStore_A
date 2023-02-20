@@ -3,7 +3,7 @@ using OnlineStore.Domain.RepositoriesInterfaces;
 
 namespace OnlineStore.Data.UnitOfWork;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IAsyncDisposable
 {
     IAccountRepository AccountRepository { get; }
     IProductRepository ProductRepository { get; }

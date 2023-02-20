@@ -16,8 +16,8 @@ public class AppComponentBase : ComponentBase
         _localStorageService = localStorageService ?? throw new ArgumentNullException(nameof(localStorageService));
         Shopclient = shopClient ?? throw new ArgumentNullException(nameof(shopClient));
     }
-    
-    protected bool IsTokenChecked { get; private set; }
+
+    private bool IsTokenChecked { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

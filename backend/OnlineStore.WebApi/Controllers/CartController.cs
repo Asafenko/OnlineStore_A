@@ -21,6 +21,10 @@ public class CartController : ControllerBase
         return await _cartService.GetCarts(csToken);
     }
 
-
+    [HttpGet("get_by_id/id={id:guid}")]
+    public async Task<Cart> GetCartByAccountId(Guid id,CancellationToken ctsToken)
+    {
+       return await _cartService.GetCartByAccount(id, ctsToken);
+    }
 
 }

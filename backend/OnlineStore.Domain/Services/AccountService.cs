@@ -1,4 +1,5 @@
-﻿using OnlineStore.Data.UnitOfWork;
+﻿using OnlineStore.Data;
+using OnlineStore.Data.UnitOfWork;
 using OnlineStore.Domain.Entities;
 using OnlineStore.Domain.Exceptions;
 
@@ -32,7 +33,8 @@ public class AccountService
         {
             var account = new Account(name,email,hasherPassword,Guid.NewGuid());
             await _unitOfWork.AccountRepository.Add(account, ctsToken);
-            //CART ADD
+            var cart = new Cart() {Id = Guid.NewGuid(),AccountId = account.Id};
+            await _unitOfWork.CartRepository.Add(cart, ctsToken);
             await _unitOfWork.CommitAsync(ctsToken);
             var token = _tokenService.GenerateToken(account);
             return (account,token);
