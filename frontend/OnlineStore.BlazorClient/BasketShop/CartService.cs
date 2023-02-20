@@ -11,7 +11,7 @@ public class CartService : ICartService
 
     public CartService(IShopClient client)
     {
-        _client = client;
+        _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
     public IReadOnlyList<Product> GetShopProduct()

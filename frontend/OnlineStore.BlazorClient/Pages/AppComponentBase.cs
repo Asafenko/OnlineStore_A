@@ -7,14 +7,14 @@ namespace OnlineStore.BlazorClient.Pages;
 
 public class AppComponentBase : ComponentBase
 {
-    private readonly IShopClient _client;
-    private readonly ILocalStorageService _localStoregeService;
-
+    private readonly IShopClient Shopclient;
+    private readonly ILocalStorageService _localStorageService;
+    
 
     public AppComponentBase(IShopClient shopClient,ILocalStorageService localStorageService)
     {
-        _localStoregeService = localStorageService ?? throw new ArgumentNullException(nameof(localStorageService));
-        _client = shopClient ?? throw new ArgumentNullException(nameof(shopClient));
+        _localStorageService = localStorageService ?? throw new ArgumentNullException(nameof(localStorageService));
+        Shopclient = shopClient ?? throw new ArgumentNullException(nameof(shopClient));
     }
     
     protected bool IsTokenChecked { get; private set; }
@@ -25,10 +25,10 @@ public class AppComponentBase : ComponentBase
         if(!IsTokenChecked)
         {
             IsTokenChecked = true;
-            var token = await _localStoregeService.GetItemAsync<string>("token");
+            var token = await _localStorageService.GetItemAsync<string>("token");
             if (!string.IsNullOrEmpty(token))
             {
-                //_client;
+                Shopclient.SetAuthorizationToken(token);
             }
         }
     }

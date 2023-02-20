@@ -1,7 +1,7 @@
 ﻿@page "/Register"
 @using OnlineStore.HttpApiClient
 @using OnlineStore.HttpModels.Requests
-<h3>Register</h3>
+<h3>Registration</h3>
 @inject IShopClient ShopClient;
 @* <EditForm Model="_request" OnValidSubmit="Register"> *@
 @*     <DataAnnotationsValidator/> *@
@@ -24,7 +24,6 @@
                                   @bind-value="_request.Email" RequiredError="Email is required!"/>
                     <MudTextField T="string"Label="Password" @bind-value="_request.Password"
                                   HelperText="Repeat the password" InputType="InputType.Password"/>
-
                 </MudForm>
             </MudPaper>
             <MudPaper Class="pa-4 mt-4">
@@ -47,7 +46,7 @@
 
 
 @code {
-    private RegisterRequest _request = new();
+    private readonly RegisterRequest _request = new();
 
     protected override async Task OnInitializedAsync()
     {

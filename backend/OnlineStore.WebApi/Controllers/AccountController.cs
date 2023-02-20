@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using OnlineStore.Domain;
 using OnlineStore.Domain.Entities;
 using OnlineStore.Domain.Exceptions;
 using OnlineStore.Domain.Services;
@@ -26,12 +25,14 @@ public class AccountController : ControllerBase
     //accounts/register
     [HttpPost("register")]
     public async Task<ActionResult<RegisterResponse>> Register(RegisterRequest request,
-        CancellationToken cancellationToken = default)
+        CancellationToken ctsToken = default)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
         try
         {
             var (account,token) = await _accountService.RegisterAccount(
-                request.Name, request.Email, request.Password, cancellationToken);
+                request.Name, request.Email, request.Password, ctsToken);
+            
             return new RegisterResponse(account.Id,account.Name,account.Email,token);
         }
         catch (EmailAlreadyExists)
@@ -42,11 +43,12 @@ public class AccountController : ControllerBase
 
     //account/log_in
     [HttpPost("log_in")]
-    public async Task<ActionResult<LogInResponse>> Login(LogInRequest request, CancellationToken cts = default)
+    public async Task<ActionResult<LogInResponse>> Login(LogInRequest request, CancellationToken ctsToken = default)
     {
+        if (request == null) throw new ArgumentNullException(nameof(request));
         try
         {
-            var (account,token) = await _accountService.LoginAccount(request.Email, request.Password, cts);
+            var (account,token) = await _accountService.LoginAccount(request.Email, request.Password, ctsToken);
             return new LogInResponse(account.Id,account.Name,account.Email,token);
         }
         catch (EmailNotFoundException)
@@ -59,9 +61,21 @@ public class AccountController : ControllerBase
         }
     }
 
+    
+    
+    //accounts/get_all
+    [HttpGet("get_all")]
+    public async Task<IEnumerable<Account>> GetAccounts(CancellationToken ctsToken = default)
+    {
+        var accounts = await _accountService.GetAccounts(ctsToken);
+        return accounts;
+    }
+    
+    
+    
     [Authorize]
     [HttpGet("get_current")]
-    public async Task<ActionResult<Account>> GetCurrentAccount()
+    public async Task<ActionResult<Account>> GetCurrentAccount(CancellationToken ctsToken = default)
     {
         var strId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (strId is null)
@@ -69,52 +83,10 @@ public class AccountController : ControllerBase
             return Unauthorized();
         }
         var accountId = Guid.Parse(strId);
-        var account = await _accountService.GetAccount(accountId);
+        var account = await _accountService.GetAccount(accountId,ctsToken);
         return account;
     }  
     
     
-
-    //accounts/get_all
-    //[HttpGet("get_all")]
-    //public async Task<IEnumerable<Account>> GetAccounts(CancellationToken cts = default)
-    // {
-    //     var accounts = await _accountRepository.GetAll(cts);
-    //     return accounts;
-    // }
-
-    //accounts/get_by_id
-    //[HttpGet("get_by_id")]
-    // public async Task<Account> GetById([FromQuery]Guid id,CancellationToken cts = default)
-    // {
-    //     var account = await _accountRepository.GetById(id, cts);
-    //     return account;
-    // }
-
-
-    //accounts/update
-    // [HttpPut("update")]
-    // public async Task UpdateAccount([FromBody]Account account, CancellationToken cts = default)
-    // {
-    //     if (account == null) throw new ArgumentNullException(nameof(account));
-    //     await _accountRepository.Update(account, cts);
-    // }
-    //
-    // //accounts/get_by_name
-    // [HttpGet("get_by_email")]
-    // public async Task<Account> GetByEmail(string email,CancellationToken cts = default)
-    // {
-    //     if (email == null) throw new ArgumentNullException(nameof(email));
-    //     var accountName = await _accountRepository.GetByEmail(email, cts);
-    //     return accountName;
-    //
-    // }
-
-
-    //accounts/delete
-    // [HttpDelete("delete_by_id")]
-    // public async Task DeleteById([FromQuery] Guid id,CancellationToken cts = default)
-    // {
-    //     await _accountRepository.DeleteById(id, cts);
-    // }
+    
 }

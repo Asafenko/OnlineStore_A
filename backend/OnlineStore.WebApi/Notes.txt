@@ -1,0 +1,42 @@
+﻿
+// ШАГ 1: Установка dotnet-ef
+//Устанавливаем в систему инструмент для проектирования БД во время разработки.
+//Он позволит создавать БД и миграции: dotnet tool install --global dotnet-ef
+
+// ШАГ 2: Добавляем ef-tool к проекту
+// тобы получить возможность использовать ef-tool из проекта, нужно добавить к проекту пакет: Microsoft.EntityFrameworkCore.Design
+
+// Шаг 3: Добавляем провайдер
+// Добавляем NuGet пакет с провайдером для необходимой БД. Например, Microsoft.EntityFrameworkCore.Sqlite
+
+// ШАГ 4: Добавляем модель
+// public class AppDbContext : DbContext
+// {
+//     //Список таблиц:
+//     public DbSet<Order> Orders => Set<Order>();
+//
+//     public AppDbContext(
+//         DbContextOptions<AppDbContext> options) 
+//         : base(options)
+//     {
+//     }
+
+// ШАГ 5: Регистрируем зависимость
+// var dbPath = "myapp.db";
+// builder.Services.AddDbContext<AppDbContext>(
+// options => options.UseSqlite($"Data Source={dbPath}"));
+
+
+// ШАГ 6: Создаем БД
+// dotnet ef migrations add InitialCreate
+// Выполните эту команду именно из папки с проектом, а не из папки с решением
+
+//Миграция Пример : dotnet ef migrations add <MigrationName>
+
+// ШАГ 7: Применение миграций
+// Не забудьте вызвать применение миграций путем вызова команды:
+//dotnet ef database update
+
+// ШАГ 8: Внедряем зависимость
+// app.MapGet("/orders", async (AppDbContext context)
+// => await context.Orders.ToListAsync());

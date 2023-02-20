@@ -55,6 +55,7 @@ public class ShopClient : IShopClient
     // UPDATE PRODUCT BY ID
     public async Task UpdateProduct(Guid id,Product product,CancellationToken cts = default)
     {
+        if (product == null) throw new ArgumentNullException(nameof(product));
         var uri = $"{_host}/products/update?id={id}";
         var response = await _httpClient.PutAsJsonAsync(uri, product,cts);
         response.EnsureSuccessStatusCode();
@@ -68,50 +69,72 @@ public class ShopClient : IShopClient
         response.EnsureSuccessStatusCode();
     }
 
-    public async Task Registration(RegisterRequest request, CancellationToken cts = default)
+    
+    
+    public async Task Registration(RegisterRequest request, CancellationToken ctsToken = default)
     {
         if (request == null) throw new ArgumentNullException(nameof(request));
         var uri = $"{_host}/accounts/register";
-        var response = await _httpClient.PostAsJsonAsync(uri,request,cts);
-        if (response.StatusCode == HttpStatusCode.BadRequest)
-        {
-            var json = await response.Content.ReadAsStringAsync(cts);
+        var responseMessage = await _httpClient.PostAsJsonAsync(uri,request,ctsToken);
+        if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
+        { 
+            var json = await responseMessage.Content.ReadAsStringAsync(ctsToken);
             throw new HttpBadRequestException(json);
         }
-        response.EnsureSuccessStatusCode();
+        responseMessage.EnsureSuccessStatusCode();
     }
 
-    public async Task<LogInResponse> Login(string email, string password, CancellationToken cts = default)
+    public async Task<LogInResponse> Login(LogInRequest request, CancellationToken ctsToken = default)
     {
-        if (email == null) throw new ArgumentNullException(nameof(email));
-        if (password == null) throw new ArgumentNullException(nameof(password));
-    
+        if (request == null) throw new ArgumentNullException(nameof(request));
+
         var uri = $"{_host}/accounts/log_in";
-        var responseMessage = await _httpClient.PostAsJsonAsync(uri,email,cts);
+        var responseMessage = await _httpClient.PostAsJsonAsync(uri,request,ctsToken);
         if(responseMessage.StatusCode == HttpStatusCode.BadRequest)
         {
-            var json = await responseMessage.Content.ReadAsStringAsync(cts);
+            var json = await responseMessage.Content.ReadAsStringAsync(ctsToken);
             throw new HttpBadRequestException(json);
         }
-        
         responseMessage.EnsureSuccessStatusCode();
-        
         var response = await responseMessage.Content.ReadFromJsonAsync<LogInResponse>(
-            cancellationToken: cts);
-        
-        _httpClient.DefaultRequestHeaders.Authorization
-            = new AuthenticationHeaderValue("Bearer", response!.Token);
-        
+            cancellationToken: ctsToken);
+        SetAuthorizationToken(response.Token);
         return response;
     }
 
+    //private bool IsAuthorizationTokenSet { get; set; }
+    public void SetAuthorizationToken(string token)
+    {
+        if (token == null) throw new ArgumentNullException(nameof(token));
+         _httpClient.DefaultRequestHeaders.Authorization 
+            = new AuthenticationHeaderValue("Bearer", token);
+        // IsAuthorizationTokenSet = true;
+    }
 
-    // DELETE ALL PRODUCT
-    // public async Task Delete(CancellationToken cts= default)
-    // {
-    //     var uri = $"{_host}/products/delete";
-    //     await _httpClient.DeleteAsync(uri,cts);
-    // }
+    public void ResetAuthorizationToken()
+    {
+        _httpClient.DefaultRequestHeaders.Remove("Authorization");
+        //     IsAuthorizationTokenSet = false;
+    }
+
+    
+
+    public async Task<LogInResponse> GetCurrent(CancellationToken ctsToken = default)
+    {
+        var uri = $"{_host}/account/get_current";
+        var responseMessage = await _httpClient.PostAsJsonAsync(uri,ctsToken, cancellationToken: ctsToken);
+        if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            var json = await responseMessage.Content.ReadAsStringAsync(ctsToken);
+            throw new HttpBadRequestException(json);
+        }
+        responseMessage.EnsureSuccessStatusCode();
+        var response = await responseMessage.Content.ReadFromJsonAsync<LogInResponse>(
+            cancellationToken: ctsToken);
+        return response;
+    }
+
+    
     
     
     

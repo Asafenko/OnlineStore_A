@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Domain.Entities;
-using OnlineStore.Domain.RepositoriesInterfaces;
+using OnlineStore.Domain.Services;
 
 
 namespace OnlineStore.WebApi.Controllers;
@@ -8,63 +8,58 @@ namespace OnlineStore.WebApi.Controllers;
 [Route("products")]
 public class ProductController : ControllerBase
 {
-    private readonly IProductRepository _productRepository;
+    private readonly ProductService _productService;
 
-    public ProductController(IProductRepository productRepository)
+    public ProductController(ProductService productService)
     {
-        _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+        _productService = productService ?? throw new ArgumentNullException(nameof(productService));
     }
 
     //products/get_all
     [HttpGet("get_all")]
-    public async Task<IEnumerable<Product>> GetProducts(CancellationToken cts)
+    public async Task<IReadOnlyList<Product>> GetAllProducts(CancellationToken ctsToken = default)
     {
-        var product = await _productRepository.GetAll(cts);
-        return product;
+        var products = await _productService.GetProducts(ctsToken);
+        return products;
     }
-
+    
     //products/get_by_id
     [HttpGet("get_by_id/id={id:guid}")]
-    public async Task<Product> GetProduct(Guid id, CancellationToken cts)
+    public async Task<Product> GetProduct( Guid id, CancellationToken ctsToken = default)
     {
-        var product = await _productRepository.GetById(id, cts);
+        var product = await _productService.GetProduct(id, ctsToken);
         return product;
     }
 
     //products/add
     [HttpPost("add")]
-    public async Task AddProduct(Product product, CancellationToken cts)
+    public async Task AddProduct(Product product, CancellationToken ctsToken = default)
     {
-        await _productRepository.Add(product, cts);
+        if (product == null) throw new ArgumentNullException(nameof(product));
+        await _productService.AddProduct(product, ctsToken);
     }
 
     //products/update
     [HttpPut("update")]
-    public async Task UpdateProduct([FromBody] Product product, CancellationToken cts)
+    public async Task UpdateProduct(Product product, CancellationToken ctsToken = default)
     {
-        await _productRepository.Update(product, cts);
+        if (product == null) throw new ArgumentNullException(nameof(product));
+        await _productService.UpdateProduct(product, ctsToken);
     }
-
+    
     //products/get_by_name
     [HttpGet("get_by_name/name={name}")]
-    public async Task<IReadOnlyList<Product>> GetByName(string name, CancellationToken cts = default)
+    public async Task<IReadOnlyList<Product>> GetProductByName(string name,CancellationToken ctsToken = default)
     {
-        var accountName = await _productRepository.FindByName(name, cts);
-        return accountName;
+        if (name == null) throw new ArgumentNullException(nameof(name));
+        var accountsName = await _productService.GetByName(name, ctsToken);
+        return accountsName;
     }
-
-
+    
     //products/delete_by_id
     [HttpDelete("delete_by_id/id={id:guid}")]
-    public async Task DeleteProduct(Guid id, CancellationToken cts)
+    public async Task DeleteProduct(Guid id,CancellationToken ctsToken = default)
     {
-        await _productRepository.DeleteById(id, cts);
+        await _productService.DeleteProduct(id, ctsToken);
     }
-
-    //products/delete
-    // [HttpDelete("delete")]
-    // public async Task Delete(CancellationToken cts)
-    // {
-    //     await _dbContext.Delete(cts);
-    // }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineStore.Data.Repositories.Generic;
-using OnlineStore.Domain;
 using OnlineStore.Domain.Entities;
 using OnlineStore.Domain.RepositoriesInterfaces;
 

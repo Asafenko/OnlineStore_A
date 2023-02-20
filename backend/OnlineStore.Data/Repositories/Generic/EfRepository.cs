@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using OnlineStore.Domain;
 using OnlineStore.Domain.Entities;
 using OnlineStore.Domain.RepositoriesInterfaces;
 
@@ -17,7 +16,7 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    protected DbSet<TEntity> Entities => DbContext.Set<TEntity>();
+    public DbSet<TEntity> Entities => DbContext.Set<TEntity>();
 
     // Get By Id
     public virtual async Task<TEntity> GetById(Guid id, CancellationToken cts = default)
@@ -38,7 +37,7 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
         await Entities.AddAsync(entity, cts);
-        await DbContext.SaveChangesAsync(cts);
+        //await DbContext.SaveChangesAsync(cts);
     }
 
 
@@ -47,7 +46,7 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
         DbContext.Entry(entity).State = EntityState.Modified;
-        await DbContext.SaveChangesAsync(cts);
+       // await DbContext.SaveChangesAsync(cts);
     }
     
     // Delete By Id
@@ -55,18 +54,6 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
     {
         var delEntity = await Entities.FirstAsync(it => it.Id == id, cts);
         Entities.Remove(delEntity);
-        await DbContext.SaveChangesAsync(cts);
+        //await DbContext.SaveChangesAsync(cts);
     }
-    
-    
-    // Delete All
-    // public async Task Delete(CancellationToken cts = default)
-    // {
-    //     await _entities.ExecuteDeleteAsync(cts);
-    //     await _dbContext.SaveChangesAsync(cts);
-    // }
-    //
-    
-    
-    
 }

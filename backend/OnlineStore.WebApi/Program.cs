@@ -1,5 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
@@ -8,11 +6,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OnlineStore.Data;
 using OnlineStore.Data.Repositories.Account_Repo;
+using OnlineStore.Data.Repositories.Cart_Repo;
 using OnlineStore.Data.Repositories.Product_Repo;
-using OnlineStore.Domain.Entities;
+using OnlineStore.Data.UnitOfWork;
 using OnlineStore.Domain.RepositoriesInterfaces;
 using OnlineStore.Domain.Services;
-using OnlineStore.WebApi;
 using OnlineStore.WebApi.Configurations;
 using OnlineStore.WebApi.Middleware;
 using OnlineStore.WebApi.Services;
@@ -29,8 +27,13 @@ builder.Services.AddSwaggerGen();
 // DbContext does not support Thread-safe
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ICartRepository,CartRepository>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+// Unit Of Work
+builder.Services.AddScoped<IUnitOfWork, UnitOfWorkEf>();
 // Adding CORS
 builder.Services.AddCors();
 //позволяет настроить хеширование
@@ -47,9 +50,10 @@ builder.Services.AddDbContext<AppDbContext>(
 
 // Token JWT
 // Шаг 6: Считывание параметров токена
-JwtConfig jwtConfig = builder.Configuration
+var jwtConfig = builder.Configuration
     .GetSection("JwtConfig")
     .Get<JwtConfig>()!;
+
 // Шаг 2: Добавление аутентификации и авторизации
 builder.Services.AddSingleton(jwtConfig);
 builder.Services.AddAuthentication(options =>
@@ -224,45 +228,3 @@ app.MapControllers();
 app.Run();
 
 
-
-// ШАГ 1: Установка dotnet-ef
-//Устанавливаем в систему инструмент для проектирования БД во время разработки.
-//Он позволит создавать БД и миграции: dotnet tool install --global dotnet-ef
-
-// ШАГ 2: Добавляем ef-tool к проекту
-// тобы получить возможность использовать ef-tool из проекта, нужно добавить к проекту пакет: Microsoft.EntityFrameworkCore.Design
-
-// Шаг 3: Добавляем провайдер
-// Добавляем NuGet пакет с провайдером для необходимой БД. Например, Microsoft.EntityFrameworkCore.Sqlite
-
-// ШАГ 4: Добавляем модель
-// public class AppDbContext : DbContext
-// {
-//     //Список таблиц:
-//     public DbSet<Order> Orders => Set<Order>();
-//
-//     public AppDbContext(
-//         DbContextOptions<AppDbContext> options) 
-//         : base(options)
-//     {
-//     }
-
-// ШАГ 5: Регистрируем зависимость
-// var dbPath = "myapp.db";
-// builder.Services.AddDbContext<AppDbContext>(
-// options => options.UseSqlite($"Data Source={dbPath}"));
-
-
-// ШАГ 6: Создаем БД
-// dotnet ef migrations add InitialCreate
-// Выполните эту команду именно из папки с проектом, а не из папки с решением
-
-//Миграция Пример : dotnet ef migrations add <MigrationName>
-
-// ШАГ 7: Применение миграций
-// Не забудьте вызвать применение миграций путем вызова команды:
-//dotnet ef database update
-
-// ШАГ 8: Внедряем зависимость
-// app.MapGet("/orders", async (AppDbContext context)
-// => await context.Orders.ToListAsync());

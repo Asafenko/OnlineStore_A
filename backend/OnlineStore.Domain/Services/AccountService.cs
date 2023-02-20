@@ -1,42 +1,39 @@
-﻿using OnlineStore.Domain.Entities;
+﻿using OnlineStore.Data.UnitOfWork;
+using OnlineStore.Domain.Entities;
 using OnlineStore.Domain.Exceptions;
-using OnlineStore.Domain.RepositoriesInterfaces;
+
 
 namespace OnlineStore.Domain.Services;
 
 public class AccountService 
 {
-    private readonly IAccountRepository _accountRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasherService _passwordHasherService;
     private readonly ITokenService _tokenService;
 
-    public AccountService(IAccountRepository accountRepository,IPasswordHasherService? passwordHasherService, ITokenService? service)
+    public AccountService(IUnitOfWork unitOfWork,IPasswordHasherService? passwordHasherService, ITokenService? service)
     {
-        _accountRepository = accountRepository ?? throw new ArgumentNullException(nameof(accountRepository));
+        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         _passwordHasherService = passwordHasherService ?? throw new ArgumentNullException(nameof(passwordHasherService));
         _tokenService = service ?? throw new ArgumentNullException(nameof(service));
     }
     
     
     public virtual async Task<(Account,string token)> RegisterAccount(
-        string name,string email,string password, CancellationToken cts = default)
+        string name,string email,string password, CancellationToken ctsToken = default)
     {
         if (name == null) throw new ArgumentNullException(nameof(name));
         if (email == null) throw new ArgumentNullException(nameof(email));
         if (password == null) throw new ArgumentNullException(nameof(password));
-
-        // ApiController
-        // if (!ModelState.IsValid)
-        // {
-        //     return ValidationProblem(ModelState);
-        // }
+        
         var hasherPassword =await _passwordHasherService.HashPassword(password);
-        var emailName = await _accountRepository.FindByEmail(email, cts);
+        var emailName = await _unitOfWork.AccountRepository.FindByEmail(email, ctsToken);
         if ( emailName is null)
         {
-            
             var account = new Account(name,email,hasherPassword,Guid.NewGuid());
-            await _accountRepository.Add(account, cts);
+            await _unitOfWork.AccountRepository.Add(account, ctsToken);
+            //CART ADD
+            await _unitOfWork.CommitAsync(ctsToken);
             var token = _tokenService.GenerateToken(account);
             return (account,token);
         }
@@ -48,7 +45,7 @@ public class AccountService
         if (email == null) throw new ArgumentNullException(nameof(email));
         if (password == null) throw new ArgumentNullException(nameof(password));
         
-        var account = await _accountRepository.FindByEmail(email,cts);
+        var account = await _unitOfWork.AccountRepository.FindByEmail(email,cts);
         if (account is null) throw new EmailNotFoundException(email);
 
         var result =_passwordHasherService.VerifyPassword(account.Password, password);
@@ -61,11 +58,14 @@ public class AccountService
         return (account,token);
     }
 
-
-
-    public async Task<Account> GetAccount(Guid id)
+    public virtual async Task<IEnumerable<Account>> GetAccounts(CancellationToken cts = default)
     {
-        return await _accountRepository.GetById(id);
+        return await _unitOfWork.AccountRepository.GetAll(cts);
+    }
+
+    public virtual async Task<Account> GetAccount(Guid id,CancellationToken cts = default)
+    {
+        return await _unitOfWork.AccountRepository.GetById(id,cts);
     }
 
 }
