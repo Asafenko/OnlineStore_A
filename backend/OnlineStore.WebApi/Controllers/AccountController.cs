@@ -2,14 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineStore.Domain.Entities;
-using OnlineStore.Domain.Exceptions;
 using OnlineStore.Domain.Services;
 using OnlineStore.HttpModels.Requests;
 using OnlineStore.HttpModels.Responses;
 
 namespace OnlineStore.WebApi.Controllers;
 
-// 
+
 [ApiController]
 [Route("accounts")]
 public class AccountController : ControllerBase
@@ -27,38 +26,18 @@ public class AccountController : ControllerBase
     public async Task<ActionResult<RegisterResponse>> Register(RegisterRequest request,
         CancellationToken ctsToken = default)
     {
-        if (request == null) throw new ArgumentNullException(nameof(request));
-        try
-        {
-            var (account,token) = await _accountService.RegisterAccount(
+        var (account,token) = await _accountService.RegisterAccount(
                 request.Name, request.Email, request.Password, ctsToken);
             
             return new RegisterResponse(account.Id,account.Name,account.Email,token);
-        }
-        catch (EmailAlreadyExists)
-        {
-            return BadRequest(new ErrorResponse("This Email has already exists"));
-        }
     }
 
     //account/log_in
     [HttpPost("log_in")]
     public async Task<ActionResult<LogInResponse>> Login(LogInRequest request, CancellationToken ctsToken = default)
     {
-        if (request == null) throw new ArgumentNullException(nameof(request));
-        try
-        {
-            var (account,token) = await _accountService.LoginAccount(request.Email, request.Password, ctsToken);
+        var (account,token) = await _accountService.LoginAccount(request.Email, request.Password, ctsToken);
             return new LogInResponse(account.Id,account.Name,account.Email,token);
-        }
-        catch (EmailNotFoundException)
-        {
-            return BadRequest(new ErrorResponse ("This Email was not found" ));
-        }
-        catch (WrongPasswordException)
-        {
-            return BadRequest(new ErrorResponse ("Invalid Password"));
-        }
     }
 
     
@@ -70,6 +49,7 @@ public class AccountController : ControllerBase
         var accounts = await _accountService.GetAccounts(ctsToken);
         return accounts;
     }
+
     
     
     
@@ -85,8 +65,30 @@ public class AccountController : ControllerBase
         var accountId = Guid.Parse(strId);
         var account = await _accountService.GetAccount(accountId,ctsToken);
         return account;
-    }  
+    } 
+    
+    
+    [Authorize(Roles = $"{Roles.Admin}")]
+    [HttpGet("get_admin")]
+    public IActionResult GetAllAdminAccounts()
+    {
+        return Ok();
+    }
     
     
     
+    // [Authorize]
+    // [HttpPost("logout")]
+    // public IActionResult LogOut()
+    // {
+    //     return Ok();
+    // }
+    
+    
+    
+    [HttpDelete("delete_all")]
+    public async Task DeleteAll(CancellationToken ctsToken)
+    {
+        await _accountService.Delete(ctsToken);
+    }
 }

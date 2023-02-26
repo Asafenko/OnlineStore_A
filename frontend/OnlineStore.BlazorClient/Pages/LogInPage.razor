@@ -1,29 +1,18 @@
-﻿@page "/Registration"
+﻿@page "/LogIn"
 @using OnlineStore.HttpApiClient
 @using OnlineStore.HttpModels.Requests
 @using Blazored.LocalStorage
-<h3>Registration</h3>
+@using Microsoft.AspNetCore.Components
+<h3>Authorize</h3>
 @inject IToastService Toast
 @inject IShopClient ShopClient;
 @inject ILocalStorageService LocalStorageService;
 @inject NavigationManager NavigationManager;
-@* <EditForm Model="_request" OnValidSubmit="Register"> *@
-@*     <DataAnnotationsValidator/> *@
-@*     Name: <input type="text" @bind-value="_request.Name"/><br/> *@
-@*     Login: <input type="email" @bind-value="_request.Email"/><br/> *@
-@*     Password: <input type="text" @bind-value="_request.Password"/><br/> *@
-@*     <ValidationSummary/> *@
-@*     *@
-@* </EditForm> *@
-
-
 <EditForm Model="_request">
     <MudGrid>
         <MudItem xs="12" sm="7">
             <MudPaper Class="pa-4">
                 <MudForm @ref="_form" @bind-IsValid="@_success" @bind-Errors="@_errors">
-                    <MudTextField T="string" Label="Username" Required="true"
-                                  @bind-value="_request.Name" RequiredError="User name is required!"/>
                     <MudTextField T="string" Label="Email" Required="true"
                                   @bind-value="_request.Email" RequiredError="Email is required!"/>
                     <MudTextField T="string"Label="Password" @bind-value="_request.Password"
@@ -38,9 +27,9 @@
 
                 @* <input type="submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" value="Register"/>   *@
 
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@(Register)" Disabled="@(!_success)"
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="@(Login)" Disabled="@(!_success)"
                            Class="ml-auto">
-                    Register
+                    Log In
                 </MudButton>
 
             </MudPaper>
@@ -49,40 +38,29 @@
 </EditForm>
 
 
-@code {
-    private readonly RegisterRequest _request = new();
 
+
+
+
+
+
+@code {
+    private readonly LogInRequest _request = new ();
+    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
 
-    private async Task Register()
+    private async Task Login()
     {
-        var response = await ShopClient.Registration(_request);
+        var response = await ShopClient.Login(_request);
         await LocalStorageService.SetItemAsync("token", response.Token);
-        // NavigationManager.NavigateTo("Account");
-        Toast.ShowSuccess($"Account Name: {_request.Name} Added ! : ", "Success!");
+        //NavigationManager.NavigateTo("Account");
+        Toast.ShowSuccess($"Account Entered in System ! : ", "Success!");
     }
-
-
     private bool _success;
     private string[] _errors = { };
     private MudTextField<string> _pwField1;
     private MudForm _form;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

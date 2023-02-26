@@ -40,3 +40,6 @@
 // ШАГ 8: Внедряем зависимость
 // app.MapGet("/orders", async (AppDbContext context)
 // => await context.Orders.ToListAsync());
+
+
+

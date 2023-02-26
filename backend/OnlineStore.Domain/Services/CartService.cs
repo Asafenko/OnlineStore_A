@@ -25,20 +25,7 @@ public class CartService
         if (cart == null) throw new ArgumentNullException(nameof(cart));
         if (product == null) throw new ArgumentNullException(nameof(product));
         if(quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity));
-        
-        var existedItem = cart.Items.SingleOrDefault(it => it.ProductId == product.Id);
-        if (existedItem is not null)
-        {
-            existedItem.Quantity += quantity;
-        }
-        else
-        {
-            cart.Items.Add(new CartItem()
-            {
-                ProductId = product.Id, Quantity = quantity, Price = product.Price
-            });
-        }
-
+        cart.Add(product,quantity);
         await _unitOfWork.CartRepository.Update(cart,ctsToken);
         await _unitOfWork.CommitAsync(ctsToken);
     }

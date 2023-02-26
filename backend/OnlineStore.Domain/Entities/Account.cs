@@ -6,6 +6,7 @@ public record Account : IEntity
     public string Email { get; set; }
     public string Password { get; set; }
     public Guid Id { get; init; }
+    //public string[] Roles { get; set; }
     
 
     public Account() { }

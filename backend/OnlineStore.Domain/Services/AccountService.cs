@@ -11,7 +11,7 @@ public class AccountService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasherService _passwordHasherService;
     private readonly ITokenService _tokenService;
-
+    
     public AccountService(IUnitOfWork unitOfWork,IPasswordHasherService? passwordHasherService, ITokenService? service)
     {
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -20,7 +20,7 @@ public class AccountService
     }
     
     
-    public virtual async Task<(Account,string token)> RegisterAccount(
+    public virtual async  Task<(Account,string token)> RegisterAccount(
         string name,string email,string password, CancellationToken ctsToken = default)
     {
         if (name == null) throw new ArgumentNullException(nameof(name));
@@ -31,6 +31,7 @@ public class AccountService
         var emailName = await _unitOfWork.AccountRepository.FindByEmail(email, ctsToken);
         if ( emailName is null)
         {
+            
             var account = new Account(name,email,hasherPassword,Guid.NewGuid());
             await _unitOfWork.AccountRepository.Add(account, ctsToken);
             var cart = new Cart() {Id = Guid.NewGuid(),AccountId = account.Id};
@@ -39,15 +40,15 @@ public class AccountService
             var token = _tokenService.GenerateToken(account);
             return (account,token);
         }
-        throw new EmailAlreadyExists("This Email has already exists");
+        throw new EmailAlreadyExistsException("This Email has already exists");
     }
 
-    public virtual async Task<(Account,string token)> LoginAccount(string email, string password,CancellationToken cts = default)
+    public virtual async Task<(Account,string token)> LoginAccount(string email, string password,CancellationToken ctsToken = default)
     {
         if (email == null) throw new ArgumentNullException(nameof(email));
         if (password == null) throw new ArgumentNullException(nameof(password));
         
-        var account = await _unitOfWork.AccountRepository.FindByEmail(email,cts);
+        var account = await _unitOfWork.AccountRepository.FindByEmail(email,ctsToken);
         if (account is null) throw new EmailNotFoundException(email);
 
         var result =_passwordHasherService.VerifyPassword(account.Password, password);
@@ -60,14 +61,18 @@ public class AccountService
         return (account,token);
     }
 
-    public virtual async Task<IEnumerable<Account>> GetAccounts(CancellationToken cts = default)
+    public virtual async Task<IEnumerable<Account>> GetAccounts(CancellationToken ctsToken = default)
     {
-        return await _unitOfWork.AccountRepository.GetAll(cts);
+        return await _unitOfWork.AccountRepository.GetAll(ctsToken);
     }
 
-    public virtual async Task<Account> GetAccount(Guid id,CancellationToken cts = default)
+    public virtual async Task<Account> GetAccount(Guid id,CancellationToken ctsToken = default)
     {
-        return await _unitOfWork.AccountRepository.GetById(id,cts);
+        return await _unitOfWork.AccountRepository.GetById(id,ctsToken);
     }
 
+    public virtual async Task Delete (CancellationToken ctsToken = default)
+    {
+         await _unitOfWork.AccountRepository.Delete(ctsToken);
+    }
 }

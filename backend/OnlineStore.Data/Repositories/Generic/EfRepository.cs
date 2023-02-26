@@ -56,4 +56,9 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
         Entities.Remove(delEntity);
         //await DbContext.SaveChangesAsync(cts);
     }
+    
+    public virtual async Task Delete(CancellationToken cts = default)
+    {
+        await Entities.ExecuteDeleteAsync(cts);
+    }
 }

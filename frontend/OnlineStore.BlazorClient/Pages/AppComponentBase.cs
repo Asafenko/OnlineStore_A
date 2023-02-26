@@ -5,13 +5,13 @@ using OnlineStore.HttpApiClient;
 
 namespace OnlineStore.BlazorClient.Pages;
 
-public class AppComponentBase : ComponentBase
+public abstract class AppComponentBase : ComponentBase
 {
-    private readonly IShopClient Shopclient;
-    private readonly ILocalStorageService _localStorageService;
-    
+     private readonly IShopClient Shopclient;
+     private readonly ILocalStorageService _localStorageService;
 
-    public AppComponentBase(IShopClient shopClient,ILocalStorageService localStorageService)
+
+    protected AppComponentBase(IShopClient shopClient,ILocalStorageService localStorageService)
     {
         _localStorageService = localStorageService ?? throw new ArgumentNullException(nameof(localStorageService));
         Shopclient = shopClient ?? throw new ArgumentNullException(nameof(shopClient));

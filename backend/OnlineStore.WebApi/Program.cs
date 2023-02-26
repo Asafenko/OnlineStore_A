@@ -12,10 +12,19 @@ using OnlineStore.Data.UnitOfWork;
 using OnlineStore.Domain.RepositoriesInterfaces;
 using OnlineStore.Domain.Services;
 using OnlineStore.WebApi.Configurations;
-using OnlineStore.WebApi.Middleware;
+using OnlineStore.WebApi.FilterExceptions;
 using OnlineStore.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Глобальное применение фильтра Exceptions
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<CentralizedExceptionHandlingFilter>(order: 0);
+    options.Filters.Add<ApiKeyFilter>();
+    
+});
+
 
 // Add services to the container.
 // Метод AddControllers добавляет в ваше приложение необходимые сервисы для контроллеров API.
@@ -90,7 +99,7 @@ builder.Services.AddSwaggerGen(c =>
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer'" +
-                      " [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+                      " [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciO_iJTQwZ8\"",
     });
     c.AddSecurityRequirement(new OpenApiSecurityRequirement {
         {
