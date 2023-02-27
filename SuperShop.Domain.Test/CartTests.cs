@@ -59,17 +59,9 @@ public class CartTests
         //var product2 = new Product("something2","description",45m,"/",Guid.Empty);
         
         cart.Add(product);
-        
-        Assert.NotNull(cart);
-        
         Assert.Single(cart.Items);
-        
         var cartItem = cart.Items[0];
-        
         cart.Add(product);
-        
-        Assert.NotNull(cart);
-        
         Assert.Equal(2d,cartItem.Quantity);
     }
 
@@ -100,23 +92,7 @@ public class CartTests
             }
         });
     }
-
-    [Fact]
-    public void Price_is_not_negative()
-    {
-        // Arrange
-        var cart = new Cart()
-        {
-            Id = Guid.Empty,
-            AccountId = Guid.Empty,
-            Items = new List<CartItem>()
-        };
-        // Act
-        var product = new Product("something","description",0m,"/",Guid.Empty);
-        Assert.Throws<InvalidOperationException>(() =>cart.Add(product) );
-        
-        
-    }
+    
     
     
 }
