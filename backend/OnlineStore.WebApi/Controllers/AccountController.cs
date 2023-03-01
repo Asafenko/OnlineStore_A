@@ -68,12 +68,12 @@ public class AccountController : ControllerBase
     } 
     
     
-    [Authorize(Roles = $"{Roles.Admin}")]
-    [HttpGet("get_admin")]
-    public IActionResult GetAllAdminAccounts()
-    {
-        return Ok();
-    }
+    // [Authorize(Roles = $"{Roles.Admin}")]
+    // [HttpGet("get_admin")]
+    // public IActionResult GetAllAdminAccounts()
+    // {
+    //     return Ok();
+    // }
     
     
     

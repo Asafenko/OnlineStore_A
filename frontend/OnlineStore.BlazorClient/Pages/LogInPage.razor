@@ -1,13 +1,13 @@
 ﻿@page "/LogIn"
-@using OnlineStore.HttpApiClient
 @using OnlineStore.HttpModels.Requests
 @using Blazored.LocalStorage
 @using Microsoft.AspNetCore.Components
-<h3>Authorize</h3>
 @inject IToastService Toast
-@inject IShopClient ShopClient;
+@inherits AppComponentBase
 @inject ILocalStorageService LocalStorageService;
 @inject NavigationManager NavigationManager;
+
+<h3>Authorize</h3>
 <EditForm Model="_request">
     <MudGrid>
         <MudItem xs="12" sm="7">
@@ -56,7 +56,7 @@
     {
         var response = await ShopClient.Login(_request);
         await LocalStorageService.SetItemAsync("token", response.Token);
-        //NavigationManager.NavigateTo("Account");
+        NavigationManager.NavigateTo("Account");
         Toast.ShowSuccess($"Account Entered in System ! : ", "Success!");
     }
     private bool _success;

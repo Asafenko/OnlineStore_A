@@ -11,13 +11,7 @@ public record Product : IEntity
     
     
     public Product() {}
-    public Product(string name, string description,decimal price, string img )
-    {
-        Name = name;
-        Description = description;
-        Price = price;
-        ImgUri = img;
-    }
+    
     public Product(string name,string description,decimal price,string img,Guid id)
     {
         Name = name;

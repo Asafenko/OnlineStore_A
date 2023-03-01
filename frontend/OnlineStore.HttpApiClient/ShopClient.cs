@@ -13,7 +13,7 @@ public class ShopClient : IShopClient
     private const string DefaultHost = "https://api.mysite.com";
     private readonly string _host;
     private readonly HttpClient _httpClient;
-    
+    private bool IsAuthorizationTokenSet { get; set; }
     
     public ShopClient(string host = DefaultHost, HttpClient? httpClient = null)
     {
@@ -106,7 +106,7 @@ public class ShopClient : IShopClient
         return response;
     }
 
-    private bool IsAuthorizationTokenSet { get; set; }
+    
     public void SetAuthorizationToken(string token,CancellationToken ctsToken = default)
     {
         if (token == null) throw new ArgumentNullException(nameof(token));
@@ -125,25 +125,25 @@ public class ShopClient : IShopClient
 
     public async Task<Account> GetAccount(CancellationToken ctsToken = default)
     {
-        var uri = $"{_host}/auth/get_current";
+        var uri = $"{_host}/account/get_current";
         var response = await _httpClient.GetFromJsonAsync<Account>(uri,ctsToken);
         return response;
     }
 
-    public async Task<LogInResponse> GetCurrent(CancellationToken ctsToken = default)
-    {
-        var uri = $"{_host}/account/get_current";
-        var responseMessage = await _httpClient.PostAsJsonAsync(uri,ctsToken, cancellationToken: ctsToken);
-        if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            var json = await responseMessage.Content.ReadAsStringAsync(ctsToken);
-            throw new HttpBadRequestException(json);
-        }
-        responseMessage.EnsureSuccessStatusCode();
-        var response = await responseMessage.Content.ReadFromJsonAsync<LogInResponse>(
-            cancellationToken: ctsToken);
-        return response;
-    }
+    // public async Task<LogInResponse> GetCurrent(CancellationToken ctsToken = default)
+    // {
+    //     var uri = $"{_host}/account/get_current";
+    //     var responseMessage = await _httpClient.PostAsJsonAsync(uri,ctsToken, cancellationToken: ctsToken);
+    //     if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
+    //     {
+    //         var json = await responseMessage.Content.ReadAsStringAsync(ctsToken);
+    //         throw new HttpBadRequestException(json);
+    //     }
+    //     responseMessage.EnsureSuccessStatusCode();
+    //     var response = await responseMessage.Content.ReadFromJsonAsync<LogInResponse>(
+    //         cancellationToken: ctsToken);
+    //     return response;
+    // }
 
     
     

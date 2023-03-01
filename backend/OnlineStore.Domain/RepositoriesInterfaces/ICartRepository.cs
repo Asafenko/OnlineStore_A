@@ -1,12 +1,11 @@
-﻿namespace OnlineStore.Data.Repositories.Cart_Repo;
+﻿using OnlineStore.Data;
 
-public interface ICartRepository
+namespace OnlineStore.Domain.RepositoriesInterfaces;
+
+public interface ICartRepository: IRepository<Cart>
 {
    
-    Task<Cart> GetById(Guid id, CancellationToken cts = default);
-    Task<IReadOnlyList<Cart>> GetAll(CancellationToken cts = default);
-    Task Add(Cart entity, CancellationToken cts = default);
-    Task Update(Cart entity,CancellationToken cts = default);
-    Task DeleteById(Guid id, CancellationToken cts = default);
+    
     Task<Cart> GetCartByAccountId(Guid accountId, CancellationToken ctsToken = default);
+    Task<Cart?> FindCartByAccountId(Guid accountId, CancellationToken ctsToken = default);
 }

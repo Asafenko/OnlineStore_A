@@ -15,7 +15,6 @@ public class AccountRepository : EfRepository<Account>,IAccountRepository
     public async Task<Account> GetByEmail(string email, CancellationToken cancellationToken = default)
     {
         if (email == null) throw new ArgumentNullException(nameof(email));
-         //IReadonlulist       // await Entities.Where(em => em.Email.Contains(email)).ToListAsync(cancellationToken);
         var emailProduct = await Entities.FirstAsync(el => el.Email == email,cancellationToken);
         return emailProduct;
         

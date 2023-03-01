@@ -1,24 +1,24 @@
 ﻿@page "/Basket"
-@using OnlineStore.BlazorClient.BasketShop
-<h3>Basket</h3>
-@inject ICartService _cartService
 
-@if (_cartService is not null)
-{
-    @foreach (var product in _cartService.GetShopProduct())
-    {
-        <MudCard>
-            <MudCardMedia Image="@product.ImgUri" Height="400"/>
-            <MudCardContent>
-                <MudText Typo="Typo.h5">Name: @product.Name</MudText>
-                <MudText Typo="Typo.h5">Price: @product.Price</MudText>
-            </MudCardContent>
-            <MudCardActions>
-                <a href="/ProductInfo/@product.Id">Learn More</a>
-            </MudCardActions>
-        </MudCard>
-    }
-}
+<h3>Basket</h3>
+
+@* *@
+@* @if (_cartService is not null) *@
+@* { *@
+@*     @foreach (var product in _cartService.GetShopProduct()) *@
+@*     { *@
+@*         <MudCard> *@
+@*             <MudCardMedia Image="@product.ImgUri" Height="400"/> *@
+@*             <MudCardContent> *@
+@*                 <MudText Typo="Typo.h5">Name: @product.Name</MudText> *@
+@*                 <MudText Typo="Typo.h5">Price: @product.Price</MudText> *@
+@*             </MudCardContent> *@
+@*             <MudCardActions> *@
+@*                 <a href="/ProductInfo/@product.Id">Learn More</a> *@
+@*             </MudCardActions> *@
+@*         </MudCard> *@
+@*     } *@
+@* } *@
 
 
 

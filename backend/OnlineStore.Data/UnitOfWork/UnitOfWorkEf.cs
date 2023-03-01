@@ -5,7 +5,7 @@ using OnlineStore.Domain.RepositoriesInterfaces;
 
 namespace OnlineStore.Data.UnitOfWork;
 
-public class UnitOfWorkEf : IUnitOfWork
+public class UnitOfWorkEf : IUnitOfWork, IDisposable
 {
     private readonly AppDbContext _dbContext;
     

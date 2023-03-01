@@ -5,7 +5,7 @@ namespace OnlineStore.WebApi.FilterExceptions;
 
 public class ApiKeyFilter : Attribute, IAuthorizationFilter
 {
-    private const string ApiKeyHeaderName = "";
+    private const string ApiKeyHeaderName = "API-KEY";
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {

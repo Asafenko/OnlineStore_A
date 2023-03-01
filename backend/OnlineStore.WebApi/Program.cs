@@ -13,6 +13,7 @@ using OnlineStore.Domain.RepositoriesInterfaces;
 using OnlineStore.Domain.Services;
 using OnlineStore.WebApi.Configurations;
 using OnlineStore.WebApi.FilterExceptions;
+using OnlineStore.WebApi.Middleware;
 using OnlineStore.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -153,50 +154,6 @@ app.Use(async (context, next) =>
 });
 
 
-// STEP 8
-//GET PRODUCTS
-//  app.MapGet("/products", async ([FromServices]IAppDbContextRepository dbContext,CancellationToken cts ) =>
-// {
-//     var products = await dbContext.GetProducts(cts);
-//     return products;
-//  });
-//GET PRODUCT BY ID
-// app.MapGet("/product/{id:guid}", async ([FromServices]IAppDbContextRepository dbContext,Guid id,CancellationToken cts) =>
-// {
-//     //[FromQuery]: /product?ID=0000
-//     var productId = await dbContext.GetProduct(id,cts);
-//     return Results.Ok(productId);
-// });
-// ADD PRODUCT
-// app.MapPost("/add", async (
-// [FromServices]IAppDbContextRepository dbContext,[FromBody] Product product,HttpResponse response,CancellationToken cts) =>
-// {
-//     product.Id = new Guid();
-//     await dbContext.AddProduct(product,cts);
-//     response.StatusCode = StatusCodes.Status201Created;
-//     return response.StatusCode;
-//     //return Results.Created($"http://localhost/add/{product.Id}",null);
-// });
-// UPDATE PRODUCT BY ID
-// app.MapPut("/product/{id:guid}", async (
-// [FromServices]IAppDbContextRepository dbContext,[FromBody]Product product,[FromRoute] Guid id,CancellationToken cts) =>
-// {
-//     var productUP =  await dbContext.UpdateProduct(product,cts);
-//     return productUP;
-// });
-// DELETE PRODUCT BY ID
-// app.MapDelete("/product/{id:guid}",async (
-// [FromServices]IAppDbContextRepository dbContext,[FromRoute] Guid id,CancellationToken cts) =>
-// {
-//     var product = await dbContext.DeleteProduct(id,cts);
-//     return product;
-// });
-// DELETE
-// app.MapDelete("/delete", async (
-// [FromServices]IAppDbContextRepository dbContext,CancellationToken cts) =>
-// {
-//    await dbContext.Delete(cts);
-// });
 
 
 // 1 Configure the HTTPS request pipeline.
@@ -213,6 +170,7 @@ if (app.Environment.IsDevelopment())
 }
 
 //добавление HttpLoggingMiddleware в конвейер
+app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseHttpLogging();
 
 
@@ -232,7 +190,7 @@ app.UseAuthorization();
 // Метод MapControllers настраивает действия контроллера API в вашем приложении как конечные точки.
 app.MapControllers();
 
-//app.UseMiddleware<RequestLoggingMiddleware>();
+
 
 app.Run();
 

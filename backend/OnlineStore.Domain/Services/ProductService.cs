@@ -32,13 +32,16 @@ public class ProductService
     {
         if (product == null) throw new ArgumentNullException(nameof(product));
         await _unitOfWork.ProductRepository.Add(product, ctsToken);
+        await _unitOfWork.CommitAsync(ctsToken);
     }
 
     
-    public virtual async Task UpdateProduct(Product product, CancellationToken ctsToken = default)
+    public virtual async Task<Product> UpdateProduct(Product product, CancellationToken ctsToken = default)
     {
         if (product == null) throw new ArgumentNullException(nameof(product));
         await _unitOfWork.ProductRepository.Update(product, ctsToken);
+        await _unitOfWork.CommitAsync(ctsToken);
+        return product;
     }
 
     
@@ -51,9 +54,10 @@ public class ProductService
 
 
     
-    public virtual async Task DeleteProduct(Guid id, CancellationToken ctsToken)
+    public virtual async Task<Product> DeleteProduct(Guid id, CancellationToken ctsToken)
     {
-        await _unitOfWork.ProductRepository.DeleteById(id, ctsToken);
-        
+        var deleteProduct = await _unitOfWork.ProductRepository.DeleteById(id, ctsToken);
+        await _unitOfWork.CommitAsync(ctsToken);
+        return deleteProduct;
     }
 }

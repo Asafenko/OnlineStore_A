@@ -9,7 +9,6 @@ namespace OnlineStore.WebApi.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly ProductService _productService;
-
     public ProductController(ProductService productService)
     {
         _productService = productService ?? throw new ArgumentNullException(nameof(productService));

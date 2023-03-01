@@ -1,5 +1,4 @@
-﻿using OnlineStore.Data.Repositories.Cart_Repo;
-using OnlineStore.Domain.RepositoriesInterfaces;
+﻿using OnlineStore.Domain.RepositoriesInterfaces;
 
 namespace OnlineStore.Data.UnitOfWork;
 

@@ -4,26 +4,45 @@ namespace OnlineStore.Data;
 
 public record Cart : IEntity
 {
-    public int ItemCount => Items.Count;
+    
+    public int ItemCount => _items.Count;
     public Guid AccountId { get; set; }
-    public List<CartItem> Items { get; set; } = new ();
+    public IReadOnlyCollection<CartItem> Items => _items.AsReadOnly();
+    
+    private readonly List<CartItem> _items ;
     public Guid Id { get; init; }
 
-    public decimal GetTotalPrice()
+    
+    protected Cart()
     {
-        return Items.Sum(it => it.Price);
+        _items = new List<CartItem>();
+    }
+
+    public Cart(Guid id, Guid accountId, List<CartItem> items)
+    {
+        Id = id;
+        AccountId = accountId;
+        _items = items;
     }
     
-    public void Add(Product product, double quantity = 1d)
+    
+    
+    
+    
+    
+    
+    
+    
+    public decimal GetTotalPrice()
+    {
+        return _items.Sum(it => it.Price);
+    }
+    
+    public CartItem Add(Product product, double quantity = 1d)
     {
         if (product == null) throw new ArgumentNullException(nameof(product));
         if(quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity));
-        var checkPrice = product.Price;
-        if (checkPrice <= 0m)
-        {
-            throw new InvalidOperationException("Price cannot be less than zero");
-        }
-        
+
         var cartItem = Items.SingleOrDefault(it => it.ProductId == product.Id);
         if (cartItem is not null)
         {
@@ -37,22 +56,11 @@ public record Cart : IEntity
         }
         else
         {
-            cartItem = new CartItem()
-            {
-                Id = Guid.Empty,
-                Price = product.Price,
-                ProductId = product.Id,
-                Quantity = quantity
-            };
-            Items.Add(cartItem);
+            cartItem = new CartItem(Guid.Empty, product.Id, quantity, product.Price);
+            _items.Add(cartItem);
         }
+        return cartItem;
     }
+    
 
-}
-public record CartItem
-{
-    public Guid Id { get; set; }
-    public Guid ProductId { get; set; }
-    public decimal Price { get; set; }
-    public double Quantity { get; set; }
 }

@@ -1,12 +1,12 @@
 ﻿@page "/Registration"
-@using OnlineStore.HttpApiClient
 @using OnlineStore.HttpModels.Requests
 @using Blazored.LocalStorage
-<h3>Registration</h3>
 @inject IToastService Toast
-@inject IShopClient ShopClient;
+@inherits AppComponentBase
 @inject ILocalStorageService LocalStorageService;
 @inject NavigationManager NavigationManager;
+
+<h3>Registration</h3>
 @* <EditForm Model="_request" OnValidSubmit="Register"> *@
 @*     <DataAnnotationsValidator/> *@
 @*     Name: <input type="text" @bind-value="_request.Name"/><br/> *@
@@ -52,16 +52,12 @@
 @code {
     private readonly RegisterRequest _request = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-    }
-
+    
     private async Task Register()
     {
         var response = await ShopClient.Registration(_request);
         await LocalStorageService.SetItemAsync("token", response.Token);
-        // NavigationManager.NavigateTo("Account");
+         NavigationManager.NavigateTo("Account");
         Toast.ShowSuccess($"Account Name: {_request.Name} Added ! : ", "Success!");
     }
 

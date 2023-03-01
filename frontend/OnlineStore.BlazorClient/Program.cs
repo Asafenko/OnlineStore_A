@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using OnlineStore.BlazorClient;
 using MudBlazor.Services;
-using OnlineStore.BlazorClient.BasketShop;
+
 using OnlineStore.HttpApiClient;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -32,6 +32,6 @@ builder.Services.AddSingleton<IShopClient>(new ShopClient("https://localhost:707
 
 
 // FOR BASKET
-builder.Services.AddSingleton<ICartService,CartService>();
+//builder.Services.AddSingleton<ICartService,CartService>();
 
 await builder.Build().RunAsync();

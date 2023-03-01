@@ -34,7 +34,7 @@ public class AccountService
             
             var account = new Account(name,email,hasherPassword,Guid.NewGuid());
             await _unitOfWork.AccountRepository.Add(account, ctsToken);
-            var cart = new Cart() {Id = Guid.NewGuid(),AccountId = account.Id};
+            var cart = new Cart(Guid.NewGuid(),account.Id,new List<CartItem>() ) ;
             await _unitOfWork.CartRepository.Add(cart, ctsToken);
             await _unitOfWork.CommitAsync(ctsToken);
             var token = _tokenService.GenerateToken(account);
@@ -51,7 +51,7 @@ public class AccountService
         var account = await _unitOfWork.AccountRepository.FindByEmail(email,ctsToken);
         if (account is null) throw new EmailNotFoundException(email);
 
-        var result =_passwordHasherService.VerifyPassword(account.Password, password);
+        var result =_passwordHasherService.VerifyPassword(account.PasswordHash, password);
         if (result == null)
         {
             throw new WrongPasswordException("Invalid Password");

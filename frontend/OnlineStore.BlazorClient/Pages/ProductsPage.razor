@@ -1,14 +1,10 @@
 ﻿@page "/Products"
-
-@using OnlineStore.BlazorClient.BasketShop
 @using OnlineStore.Domain.Entities
-@using OnlineStore.HttpApiClient
-<h3>List Product</h3>
 @inject IToastService Toast
-@inject IShopClient ShopClient;
-@inject ICartService Service
+@inherits AppComponentBase
 
 
+<h3>List Product</h3>
 @if (_products is not null)
 {
     @foreach (var product in _products)
@@ -60,7 +56,7 @@ else
             Toast.ShowError("CANCELLED");
         });
         var cancellationToken = cts.Token;
-        await Service.AddToCart(id, cancellationToken);
+        //await Service.AddToCart(id, cancellationToken);
         Toast.ShowSuccess($"Added the product to the cart! : ", "Success!");
     }
 

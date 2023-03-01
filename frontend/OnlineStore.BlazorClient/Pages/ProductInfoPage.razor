@@ -1,10 +1,11 @@
 ﻿@page "/ProductInfo/{ProductID:guid}"
-@using OnlineStore.HttpApiClient
 @using OnlineStore.Domain.Entities
+@inherits AppComponentBase
+
+
+
 
 <h3>About Product</h3>
-@inject IShopClient ShopClient
-
 @if (_product is not null)
 {
     <div>

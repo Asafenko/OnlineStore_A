@@ -12,53 +12,51 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
     //2 - manual instantiation : maybe null NRE
     protected EfRepository(AppDbContext dbContext)
     {
-        // Fail Fast
         DbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public DbSet<TEntity> Entities => DbContext.Set<TEntity>();
+    protected DbSet<TEntity> Entities => DbContext.Set<TEntity>();
 
     // Get By Id
-    public virtual async Task<TEntity> GetById(Guid id, CancellationToken cts = default)
+    public virtual async Task<TEntity> GetById(Guid id, CancellationToken ctsToken = default)
     {
-        var product = await Entities.FirstAsync(it => it.Id == id, cts);
-        return product;
+        var entity = await Entities.FirstAsync(it => it.Id == id, ctsToken);
+        return entity;
     }
 
     // Get All
-    public virtual async Task<IReadOnlyList<TEntity>> GetAll(CancellationToken cts = default)
+    public virtual async Task<IReadOnlyList<TEntity>> GetAll(CancellationToken ctsToken = default)
     {
-        var products = await Entities.ToListAsync(cts);
-        return products;
+        var entities = await Entities.ToListAsync(ctsToken);
+        return entities;
     }
 
     // Add Entity
-    public virtual async Task Add(TEntity entity, CancellationToken cts = default)
+    public virtual async Task Add(TEntity entity, CancellationToken ctsToken = default)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
-        await Entities.AddAsync(entity, cts);
-        //await DbContext.SaveChangesAsync(cts);
+        await Entities.AddAsync(entity, ctsToken);
     }
 
 
     // Update By Id
-    public virtual async Task Update(TEntity entity,CancellationToken cts = default)
+    public virtual async Task Update(TEntity entity,CancellationToken ctsToken = default)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));
         DbContext.Entry(entity).State = EntityState.Modified;
-       // await DbContext.SaveChangesAsync(cts);
+        //return ValueTask.CompletedTask;
     }
     
     // Delete By Id
-    public virtual async Task DeleteById(Guid id, CancellationToken cts = default)
+    public virtual async Task<TEntity?> DeleteById(Guid id, CancellationToken ctsToken = default)
     {
-        var delEntity = await Entities.FirstAsync(it => it.Id == id, cts);
+        var delEntity = await Entities.FirstAsync(it => it.Id == id, ctsToken);
         Entities.Remove(delEntity);
-        //await DbContext.SaveChangesAsync(cts);
+        return delEntity;
     }
     
-    public virtual async Task Delete(CancellationToken cts = default)
+    public virtual async Task Delete(CancellationToken ctsToken = default)
     {
-        await Entities.ExecuteDeleteAsync(cts);
+        await Entities.ExecuteDeleteAsync(ctsToken);
     }
 }
