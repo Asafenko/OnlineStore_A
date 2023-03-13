@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using FluentAssertions;
 using GreatShop.WebApi.Test;
+using OnlineStore.Domain.Exceptions;
 using OnlineStore.HttpApiClient;
 using OnlineStore.HttpModels.Requests;
 
@@ -58,7 +59,7 @@ public class AccountApiTest : IClassFixture<CustomWebApplicationFactory<Program>
         // Assert
         await FluentActions.Invoking((() => client.Registration(registerRequest)))
             .Should()
-            .ThrowAsync<HttpRequestException>()
+            .ThrowAsync<HttpBadRequestException>()
             .WithMessage("*This Email has already exists*");
     }
 
@@ -114,7 +115,7 @@ public class AccountApiTest : IClassFixture<CustomWebApplicationFactory<Program>
         // Assert
         await FluentActions.Invoking((() => client.Login(loginRequest)))
             .Should()
-            .ThrowAsync<HttpRequestException>()
+            .ThrowAsync<HttpBadRequestException>()
             .WithMessage("*Invalid Password*");
     }
     
@@ -124,25 +125,18 @@ public class AccountApiTest : IClassFixture<CustomWebApplicationFactory<Program>
         // Arrange
         var httpClient =  _factory.CreateClient();
         var client = new ShopClient(httpClient: httpClient);
-        var registerRequest = new RegisterRequest()
-        {
-            Name = _faker.Person.FullName,
-            Email = _faker.Person.Email,
-            Password = _faker.Internet.Password()
-        };
-        await client.Registration(registerRequest);
         
         // ACT
         var loginRequest = new LogInRequest()
         {
             Email = _faker.Person.Email,
-            Password = registerRequest.Password
+            Password = _faker.Internet.Password()
         };
         
         // Assert
         await FluentActions.Invoking((() => client.Login(loginRequest)))
             .Should()
-            .ThrowAsync<HttpRequestException>()
+            .ThrowAsync<HttpBadRequestException>()
             .WithMessage("*This Email was not found*");
     }
     

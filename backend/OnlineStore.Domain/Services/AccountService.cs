@@ -52,7 +52,7 @@ public class AccountService
         if (account is null) throw new EmailNotFoundException(email);
 
         var result =_passwordHasherService.VerifyPassword(account.PasswordHash, password);
-        if (result == null)
+        if (!result)
         {
             throw new WrongPasswordException("Invalid Password");
         }

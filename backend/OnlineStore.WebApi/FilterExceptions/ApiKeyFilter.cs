@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace OnlineStore.WebApi.FilterExceptions;
 
-public abstract class ApiKeyFilter : Attribute, IAuthorizationFilter
+public class ApiKeyFilter : Attribute, IAuthorizationFilter
 {
     private const string ApiKeyHeaderName = "API-KEY";
 

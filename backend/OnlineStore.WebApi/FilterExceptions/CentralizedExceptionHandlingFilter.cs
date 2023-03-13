@@ -5,7 +5,7 @@ using OnlineStore.HttpModels.Responses;
 
 namespace OnlineStore.WebApi.FilterExceptions;
 
-public abstract class CentralizedExceptionHandlingFilter : Attribute, IExceptionFilter
+public class CentralizedExceptionHandlingFilter : Attribute, IExceptionFilter
 {
     public void OnException(ExceptionContext context)
     {
