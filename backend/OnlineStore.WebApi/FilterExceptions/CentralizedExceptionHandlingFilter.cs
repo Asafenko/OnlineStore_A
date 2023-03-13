@@ -5,16 +5,17 @@ using OnlineStore.HttpModels.Responses;
 
 namespace OnlineStore.WebApi.FilterExceptions;
 
-public class CentralizedExceptionHandlingFilter : Attribute , IExceptionFilter
+public abstract class CentralizedExceptionHandlingFilter : Attribute, IExceptionFilter
 {
     public void OnException(ExceptionContext context)
     {
         var message = TryGetMessageFromException(context);
-        if (message != null)
+        if (message == null) return;
+        context.Result = new ObjectResult(new ErrorResponse(message))
         {
-            context.Result = new ObjectResult(new ErrorResponse(message));
-            context.ExceptionHandled = true;
-        }
+            StatusCode = 400
+        };
+        context.ExceptionHandled = true;
     }
 
 
@@ -22,9 +23,9 @@ public class CentralizedExceptionHandlingFilter : Attribute , IExceptionFilter
     {
         return context.Exception switch
         {
-            EmailAlreadyExistsException => ("This Email has already exists"),
-            EmailNotFoundException => ("This Email was not found"),
-            WrongPasswordException => ("Invalid Password"),
+            EmailAlreadyExistsException => "This Email has already exists",
+            EmailNotFoundException => "This Email was not found",
+            WrongPasswordException => "Invalid Password",
             _ =>null
         };
     }

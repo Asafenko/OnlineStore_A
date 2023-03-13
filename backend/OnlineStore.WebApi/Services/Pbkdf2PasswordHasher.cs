@@ -17,14 +17,14 @@ public class Pbkdf2PasswordHasher : IPasswordHasherService
         _hasher = new PasswordHasher<Account>(optionsAccessor);
     }
 
-    public async Task<string> HashPassword(string password)
+    public  string HashPassword(string password)
     {
         if (password == null) throw new ArgumentNullException(nameof(password));
         var hasherPassword = _hasher.HashPassword(_dummy, password);
         return hasherPassword;
     }
 
-    public async Task<bool> VerifyPassword(string passwordHash, string providedPassword)
+    public  bool VerifyPassword(string passwordHash, string providedPassword)
     {
         if (passwordHash == null) throw new ArgumentNullException(nameof(passwordHash));
         if (providedPassword == null) throw new ArgumentNullException(nameof(providedPassword));

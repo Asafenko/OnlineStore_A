@@ -40,4 +40,13 @@ public class JwtTokenService : ITokenService
         return tokenHandler.WriteToken(token);
     }
 
+    // public interface IClock
+    // {
+    //     DateTime GetCurrentTime();
+    // }
+    //
+    // public class Clock : IClock
+    // {
+    //     public DateTime GetCurrentTime() => DateTime.Now;
+    // }
 }

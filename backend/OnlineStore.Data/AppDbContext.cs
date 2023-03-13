@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using OnlineStore.Domain.Entities;
 
 namespace OnlineStore.Data;
@@ -17,5 +18,20 @@ public class AppDbContext : DbContext
         : base(options)
     {
     }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        BuildCartItems(modelBuilder);
+    }
 
+    private static void BuildCartItems(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CartItem>(action =>
+        {
+            action.HasOne(dto => dto.Cart)
+                .WithMany(dto => dto.Items)
+                .IsRequired();
+        });
+    }
 }

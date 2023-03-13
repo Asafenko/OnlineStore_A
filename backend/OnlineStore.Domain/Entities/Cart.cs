@@ -28,11 +28,6 @@ public record Cart : IEntity
     
     
     
-    
-    
-    
-    
-    
     public decimal GetTotalPrice()
     {
         return _items.Sum(it => it.Price);

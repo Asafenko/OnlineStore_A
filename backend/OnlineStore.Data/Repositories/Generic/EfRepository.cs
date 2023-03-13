@@ -30,6 +30,7 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
         var entities = await Entities.ToListAsync(ctsToken);
         return entities;
     }
+    
 
     // Add Entity
     public virtual async Task Add(TEntity entity, CancellationToken ctsToken = default)
@@ -38,8 +39,9 @@ public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class,
         await Entities.AddAsync(entity, ctsToken);
     }
 
+    
 
-    // Update By Id
+    //Update By Id
     public virtual async Task Update(TEntity entity,CancellationToken ctsToken = default)
     {
         if (entity == null) throw new ArgumentNullException(nameof(entity));

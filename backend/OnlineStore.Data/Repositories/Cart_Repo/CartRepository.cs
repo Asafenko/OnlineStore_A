@@ -16,7 +16,7 @@ public class CartRepository : EfRepository<Cart>, ICartRepository
 
     public async Task<Cart> GetCartByAccountId(Guid accountId, CancellationToken ctsToken = default)
     {
-        var cart = await Entities.SingleOrDefaultAsync(it=>it.AccountId==accountId, ctsToken);
+        var cart = await Entities.SingleOrDefaultAsync(it=>it.AccountId == accountId, ctsToken);
         return cart;
     }
 

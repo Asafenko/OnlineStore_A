@@ -6,9 +6,9 @@ public class RequestLoggingMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<RequestLoggingMiddleware> _logger;
-    private readonly ConcurrentDictionary<string, int> _concurrent;
+    private readonly ConcurrentDictionary<string, int> _concurrent=new();
 
-    public RequestLoggingMiddleware(RequestDelegate requestDelegate,ILogger<RequestLoggingMiddleware> logger)
+    public RequestLoggingMiddleware(RequestDelegate requestDelegate, ILogger<RequestLoggingMiddleware> logger)
     {
         _next = requestDelegate ?? throw new ArgumentNullException(nameof(requestDelegate));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -17,8 +17,8 @@ public class RequestLoggingMiddleware
     public async Task InvokeAsync(HttpContext ctx)
     {
         if (ctx == null) throw new ArgumentNullException(nameof(ctx));
-        var requestPath = ctx.Request.Path.ToString();
         
+        var requestPath = ctx.Request.Path.ToString();
         if (requestPath.EndsWith("/metrics"))
         {
             if (!ctx.Response.HasStarted)
@@ -30,6 +30,7 @@ public class RequestLoggingMiddleware
         {
             _concurrent.AddOrUpdate(
                 ctx.Request.Path, _ => 1, (_, currentCount) => currentCount+1);  
+            _logger.LogInformation("Request Method: {Method}",ctx.Request.Method);
             await _next(ctx);
         }
        

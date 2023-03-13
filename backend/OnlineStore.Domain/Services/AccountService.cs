@@ -27,7 +27,7 @@ public class AccountService
         if (email == null) throw new ArgumentNullException(nameof(email));
         if (password == null) throw new ArgumentNullException(nameof(password));
         
-        var hasherPassword =await _passwordHasherService.HashPassword(password);
+        var hasherPassword = _passwordHasherService.HashPassword(password);
         var emailName = await _unitOfWork.AccountRepository.FindByEmail(email, ctsToken);
         if ( emailName is null)
         {

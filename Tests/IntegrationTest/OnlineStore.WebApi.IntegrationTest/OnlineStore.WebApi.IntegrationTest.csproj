@@ -4,11 +4,16 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
+        
         <IsPackable>false</IsPackable>
+        
+        <UserSecretsId>97d0a712-a33e-467a-b3d0-25c9c86c52fb</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="FluentAssertions" Version="6.10.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
         <PackageReference Include="xunit" Version="2.4.2" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -22,7 +27,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\backend\OnlineStore.Domain\OnlineStore.Domain.csproj" />
+      <ProjectReference Include="..\..\..\backend\OnlineStore.Data\OnlineStore.Data.csproj" />
+      <ProjectReference Include="..\..\..\backend\OnlineStore.WebApi\OnlineStore.WebApi.csproj" />
+      <ProjectReference Include="..\..\..\frontend\OnlineStore.HttpApiClient\OnlineStore.HttpApiClient.csproj" />
     </ItemGroup>
 
 </Project>

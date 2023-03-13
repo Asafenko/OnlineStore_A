@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using OnlineStore.Data;
 using OnlineStore.Data.Repositories.Account_Repo;
 using OnlineStore.Data.Repositories.Cart_Repo;
+using OnlineStore.Data.Repositories.Generic;
 using OnlineStore.Data.Repositories.Product_Repo;
 using OnlineStore.Data.UnitOfWork;
 using OnlineStore.Domain.RepositoriesInterfaces;
@@ -25,7 +26,6 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<ApiKeyFilter>();
     
 });
-
 
 // Add services to the container.
 // Метод AddControllers добавляет в ваше приложение необходимые сервисы для контроллеров API.
@@ -55,17 +55,16 @@ const string dbPath = "myapp.db";
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseSqlite($"Data Source={dbPath}"));
 // Паттерн Generic Repository: Регистрация
-//builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
-
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
 // Token JWT
 // Шаг 6: Считывание параметров токена
 var jwtConfig = builder.Configuration
     .GetSection("JwtConfig")
     .Get<JwtConfig>()!;
+builder.Services.AddSingleton(jwtConfig);
 
 // Шаг 2: Добавление аутентификации и авторизации
-builder.Services.AddSingleton(jwtConfig);
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -76,6 +75,7 @@ builder.Services.AddAuthentication(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            
             IssuerSigningKey = new SymmetricSecurityKey(jwtConfig.SigningKeyBytes),
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
@@ -115,11 +115,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
-
-
-
-
 // Логирование всех запросов и ответов
 builder.Services.AddHttpLogging(options => //настройка
 {
@@ -129,9 +124,7 @@ builder.Services.AddHttpLogging(options => //настройка
                             | HttpLoggingFields.ResponseBody;
 });
 
-
 var app = builder.Build();
-
 
 //Простой Middleware
 app.Use(async (context, next) =>
@@ -146,34 +139,23 @@ app.Use(async (context, next) =>
     else
     {
         await next();
-
-    }
+    } 
     // await next(); //выполнение следующего метода в конвейере
-
-    //логика, происходящая после выполнения конвейера
+    
+//логика, происходящая после выполнения конвейера
 });
-
-
-
-
+//добавление HttpLoggingMiddleware в конвейер
+app.UseMiddleware<RequestLoggingMiddleware>();
 // 1 Configure the HTTPS request pipeline.
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
- 
-
 // 2 Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-//добавление HttpLoggingMiddleware в конвейер
-app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseHttpLogging();
-
-
 // CORS
 app.UseCors(policy =>
 {
@@ -182,16 +164,11 @@ app.UseCors(policy =>
         .AllowAnyHeader() // White list domain
         .WithOrigins("https://localhost:7079", "https://localhost:5001");
 });
-
 // Шаг 3: Добавление аутентификации и авторизации
 app.UseAuthentication();
 app.UseAuthorization();
-
 // Метод MapControllers настраивает действия контроллера API в вашем приложении как конечные точки.
 app.MapControllers();
-
-
-
 app.Run();
-
-
+// Make the implicit Program class public so test projects can access it
+public partial class Program{}
