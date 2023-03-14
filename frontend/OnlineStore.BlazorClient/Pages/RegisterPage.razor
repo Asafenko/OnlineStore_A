@@ -57,7 +57,7 @@
     {
         var response = await ShopClient.Registration(_request);
         await LocalStorageService.SetItemAsync("token", response.Token);
-        //NavigationManager.NavigateTo("Account");
+        NavigationManager.NavigateTo("Account");
         Toast.ShowSuccess($"Account Name: {_request.Name} Added ! : ", "Success!");
     }
 

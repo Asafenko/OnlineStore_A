@@ -125,31 +125,8 @@ public class ShopClient : IShopClient
 
     public async Task<Account> GetAccount(CancellationToken ctsToken = default)
     {
-        var uri = $"{_host}/account/get_current";
+        var uri = $"{_host}/accounts/get_current";
         var response = await _httpClient.GetFromJsonAsync<Account>(uri,ctsToken);
-        return response;
+        return response!;
     }
-
-    // public async Task<LogInResponse> GetCurrent(CancellationToken ctsToken = default)
-    // {
-    //     var uri = $"{_host}/account/get_current";
-    //     var responseMessage = await _httpClient.PostAsJsonAsync(uri,ctsToken, cancellationToken: ctsToken);
-    //     if (responseMessage.StatusCode == HttpStatusCode.Unauthorized)
-    //     {
-    //         var json = await responseMessage.Content.ReadAsStringAsync(ctsToken);
-    //         throw new HttpBadRequestException(json);
-    //     }
-    //     responseMessage.EnsureSuccessStatusCode();
-    //     var response = await responseMessage.Content.ReadFromJsonAsync<LogInResponse>(
-    //         cancellationToken: ctsToken);
-    //     return response;
-    // }
-
-    
-    
-    
-    
-    
-    
-    
 }

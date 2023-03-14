@@ -56,7 +56,7 @@
     {
         var response = await ShopClient.Login(_request);
         await LocalStorageService.SetItemAsync("token", response.Token);
-        //NavigationManager.NavigateTo("Account");
+        NavigationManager.NavigateTo("Account");
         Toast.ShowSuccess($"Account Entered in System ! : ", "Success!");
     }
     private bool _success;
