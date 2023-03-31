@@ -60,7 +60,7 @@ public class AccountApiTest : IClassFixture<CustomWebApplicationFactory<Program>
         await FluentActions.Invoking((() => client.Registration(registerRequest)))
             .Should()
             .ThrowAsync<HttpBadRequestException>()
-            .WithMessage("*This Email has already exists*");
+            .WithMessage("*This Email already exists*");
     }
 
     [Fact]

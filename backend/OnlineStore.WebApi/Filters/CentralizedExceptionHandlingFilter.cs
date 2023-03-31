@@ -23,7 +23,7 @@ public class CentralizedExceptionHandlingFilter : Attribute, IExceptionFilter
     {
         return context.Exception switch
         {
-            EmailAlreadyExistsException => "This Email has already exists",
+            EmailAlreadyExistsException => "This Email already exists",
             EmailNotFoundException => "This Email was not found",
             WrongPasswordException => "Invalid Password",
             _ =>null
