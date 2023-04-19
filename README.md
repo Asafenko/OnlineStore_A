@@ -4,7 +4,7 @@
 cd .../OnlineStore.WebApi
 
 2)You will go to the project from where you will need to carry out migrations: 
-dotnet ef migrations add <Name-Migrations or init> -p .../OnlineStore.Data
+dotnet ef migrations add <Name-Migrations or init> -p ../OnlineStore.Data
 
 3)At the end write the update command: 
 dotnet ef database update
